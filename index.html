@@ -69,10 +69,64 @@
         height: 64px;
       }
     </style>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   </head>
   <body>
     <img src="CD41488B-7916-4368-9078-D519894F90C7.jpeg">
     <h1>LIFFテストページ</h1>
     <p>LIFFの作成を色々と試すためのページです。</p>
+    <button class="btn" id="shareFriends">share to friends</button><br>
+    <button class="btn" id="closeWindowButton">close</button>
   </body>
+      
+  <script>
+    const liffId = "1654468470-70BE5k0P"
+    const Name = document.getElementById('profile_name');
+    const Img = document.getElementById("profile_img");
+ 
+    liff.init({liffId}).then(() => {
+      if (liff.isLoggedIn()) {
+        liff.getProfile()
+          .then(profile => {
+            const name = profile.displayName;
+            const pic = profile.pictureUrl;
+            Name.innerHTML = name;
+            Img.src = pic;
+          })
+          .catch((err) => {
+            console.log('error', err);
+          });
+      }
+      else{
+        liff.login();
+      }
+    })
+
+  function closeWindow() {
+    if (!liff.isInClient()) {
+        sendAlertIfNotInClient();
+    } else {
+        liff.closeWindow();
+    }
+  }
+    
+  function shareFriends() {
+      if (liff.isApiAvailable('shareTargetPicker')){
+        liff.shareTargetPicker(
+          [{
+            type: 'text',
+            text: 'https://liff.line.me/1654391458-ZXkyBBy8'
+          }]
+        ).then(function() {
+        }).catch(function(error) {
+          window.alert('シェア機能でエラーが起こりました：'+ error);
+        });
+      };
+    }
+     
+  document.querySelector("#shareFriends").addEventListener("click", shareFriends)
+  document.getElementById('closeWindowButton').addEventListener('click', closeWindow)
+    
+  </script>      
+
 </html>
